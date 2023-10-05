@@ -3,6 +3,7 @@ import {useWallet} from '@suiet/wallet-kit';
 import {TransactionBlock} from "@mysten/sui.js/transactions";
 import { NFTStorage, File } from 'nft.storage'; 
 // require('dotenv').config(); 
+import './DynamicForm.css'; 
 
 function DynamicForm() {
   const [fields, setFields] = useState([{ name: '', value: '' }]);
@@ -68,6 +69,7 @@ function DynamicForm() {
         dataToSend[field.name] = field.value;
       }
     });
+    dataToSend.senderAddress = wallet.account?.publicKey;
     console.log(`Data to send to backend: ${JSON.stringify(dataToSend)}`);
     setFormData(dataToSend);
     const IpfsUrl = await uploadToIpfs(dataToSend);
@@ -77,8 +79,8 @@ function DynamicForm() {
   return (
     <div>
       <h1>GENERATE CERTIFICATE</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="receiver Address" placeholder="receiver Address" onChange={(e) => handleFieldChange(e)} />
+      <form onSubmit={handleSubmit} className='my-form' >
+        <input type="text" name="receiver Address" placeholder="receiver Address" onChange={(e) => handleFieldChange(e)} className='empty-field' required />
         {fields.map((field, index) => (
           <div key={index}>
             <input
@@ -87,6 +89,7 @@ function DynamicForm() {
               placeholder="Field name"
               value={field.name}
               onChange={(e) => handleFieldChange(index, e)}
+              className='empty-field'
             />
             <input
               type="text"
@@ -94,16 +97,17 @@ function DynamicForm() {
               placeholder="Field value"
               value={field.value}
               onChange={(e) => handleFieldChange(index, e)}
+              className='empty-field'
             />
-            <button type="button" onClick={() => handleRemoveField(index)}>
+            <button type="button" onClick={() => handleRemoveField(index)} className='btn-submit'>
               Remove
             </button>
           </div>
         ))}
-        <button type="button" onClick={handleAddField}>
+        <button type="button" onClick={handleAddField} className='btn-submit' >
           Add Field
         </button>
-        <button type="submit" onClick={handleSubmit}>Submit</button>
+        <button type="submit" onClick={handleSubmit} className='btn-submit' >Submit</button>
       </form>
     </div>
   );
